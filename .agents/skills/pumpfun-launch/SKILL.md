@@ -1,127 +1,54 @@
 ---
 name: one-shot-launch
-description: Interactive ChatGPT-to-Pump.fun launch workflow. When invoked from chat, first collect only the minimum launch inputs in a simple fill-in form, then autonomously build, publish, verify, and prepare everything possible up to the final irreversible Pump.fun wallet/launch confirmation.
+description: Zero-touch Launch Factory for Pump.fun projects. Collect only a project name and concept when possible, allocate a reusable GitHub launch slot/branch, build the site/game and launch kit, publish and verify when tooling permits, and stop at the final irreversible wallet confirmation.
 ---
 
-# ONE SHOT LAUNCH
+# ONE SHOT LAUNCH — LAUNCH FACTORY
 
-## Purpose
-This skill is designed to be invoked directly from a normal ChatGPT conversation. The user does NOT need to know the full launch prompt syntax in advance. When the user says things such as `ONE SHOT LAUNCH`, `PUMPFUN LAUNCH`, `このスキルで作って`, or clearly asks to invoke this launch skill, guide them through the minimum required inputs and then execute the entire pre-launch workflow.
+## User contract
+Minimize user actions. Normally require only PROJECT NAME + CONCEPT. If the user says `任せる`, infer ticker, style, English launch copy, mechanic, repository slot, and other reversible choices. Never ask the user to create files, branches, folders, boilerplate, assets, deployment configs, or copy text when connected tools can do it.
 
-## Phase 0 — Chat intake
-When invoked without enough information, DO NOT start by explaining the workflow. Ask the user to provide/fill only these fields in one compact block:
+## Intake
+If missing, ask in one compact block for PROJECT NAME and CONCEPT. TICKER, STYLE, LANGUAGE, EXISTING PROJECT, and X are optional. Reuse anything already stated in the conversation.
 
-```
-PROJECT NAME: [required — e.g. Barcode Monster]
-TICKER: [optional — suggest 3 strong choices if blank]
-CONCEPT: [required — one sentence is enough]
-STYLE: [optional — infer and propose a strong default if blank]
-LANGUAGE: [optional — default English]
-EXISTING PROJECT / GITHUB / WEBSITE: [optional — URL if one exists]
-X ACCOUNT: [optional — URL or @handle; can be added later]
-```
+## Launch Factory repository model
+A dedicated accessible repository may host many independent launch projects. Do NOT require one repository per token.
 
-Make this extremely easy. If the user has already supplied any of these facts in the current conversation, prefill them and do not ask again. If only PROJECT NAME and CONCEPT are known, that is normally enough to proceed: infer the rest and explicitly show the assumptions.
+For every new project:
+1. Slugify the project name, e.g. `おばあちゃん` -> `obaachan`.
+2. Prefer a dedicated branch named `launch/<slug>` created from `main` so work is isolated and existing projects are never overwritten.
+3. Put project files under `launches/<slug>/` on that branch. Keep `launch-assets/` inside the project folder.
+4. If the branch already exists, inspect it and continue/update it instead of creating duplicates.
+5. If branch creation is unavailable but file writes are available, use a unique `launches/<slug>/` directory on main without overwriting unrelated files.
+6. A single factory repository may hold hundreds or thousands of launch slots; do not pre-create 100 empty repositories.
+7. If new-repository creation is available and a dedicated repo is clearly superior, it may be used, but it is not required.
 
-If the user's idea itself is vague, proactively offer 3 launchable concepts/tickers/styles rather than asking an open-ended question. The user should be able to reply with something as short as `2で` or fill the form.
+## Autonomous build
+Create a distinctive responsive site, not a generic template. For game concepts, implement a real lightweight playable mechanic where feasible. For meme concepts, create a participatory/shareable hook. Never fabricate holders, volume, market cap, followers, partnerships, audits, endorsements, contract addresses, or launch status.
 
-## Phase 1 — Launch brief confirmation
-After intake, synthesize a compact proposed launch brief containing:
-- Project name
-- Ticker
-- One-line hook
-- 2–4 sentence concept
-- Tagline
-- Visual direction
-- Core community/game/meme hook
-- Language
-- Target repository/site strategy
+Create at minimum:
+- public website files
+- `launch-assets/pumpfun-copy.md`
+- `launch-assets/x-launch-kit.md`
+- `launch-assets/asset-manifest.md`
+- production metadata/SEO/social card configuration
+- README or project notes as appropriate
 
-Ask for confirmation ONLY when a material creative assumption remains. If the user said `任せる`, `やって`, `go`, or equivalent, treat that as permission to choose reversible creative details and proceed without another confirmation.
+When image generation is available, generate the visual direction/assets. Transfer usable files into the repository when tooling supports binary upload; otherwise preserve exact production specs and clearly report the transfer as pending rather than pretending it happened.
 
-## Phase 2 — Autonomous execution
-Once enough information exists, perform the work rather than handing the user instructions.
+## Publishing
+Prefer an existing connected deployment. Otherwise use a connected host. Otherwise use a GitHub Pages-compatible static publication strategy from the factory repository. Design the factory so multiple projects can coexist at paths such as `/launches/obaachan/` and `/launches/another-project/` rather than replacing each other.
 
-1. Inspect any existing repository/project/site first and reuse its strongest identity, code, functionality and links.
-2. If there is no project yet and repository creation is available, create/use an appropriate project repository. If repository creation is unavailable, prepare the complete project in the available workspace and clearly identify the single missing connection/action.
-3. Build or substantially upgrade the responsive public website. Prefer a distinctive, high-impact launch experience over a generic template.
-4. For game projects, make the core playable interaction real when feasible. For meme/community projects, create a strong participatory mechanic, share loop, generator, score, proof, collection, reveal, leaderboard-ready structure, or other appropriate hook instead of a purely static landing page.
-5. Preserve factual integrity. Never fabricate holders, market cap, volume, followers, partnerships, audits, endorsements, contract addresses, launch status, user counts or community activity.
-6. Prepare `launch-assets/` containing at minimum:
-   - `pumpfun-copy.md`: final ready-to-paste Name, Ticker, Description, Website, X field, and launch checklist.
-   - `x-launch-kit.md`: display name, bio, teaser, launch announcement, pinned post, reply template, and 3–5 follow-up posts.
-   - `asset-manifest.md`: icon 1024x1024, Pump.fun banner 1200x400, X header 1500x500, OG image 1200x630, and one consistent art direction.
-7. When image generation is available, generate the actual visual assets. Place usable outputs into the project when file transfer/tooling permits. If tooling cannot transfer them, create exact production prompts/specifications and clearly mark the files as pending. Never pretend an image exists.
-8. Add production metadata: title, description, favicon/icon, Open Graph, X card, mobile viewport, manifest/PWA where appropriate, and canonical URL once known.
-9. Update README with project identity, live URL, run instructions, deployment method, and launch asset locations.
-10. Commit all possible changes to GitHub.
+When repository permissions allow, maintain the necessary publishing workflow/configuration automatically. Verify the live URL before calling it live. If account-level Pages/hosting enablement is the only unavailable action, keep all code deployment-ready and report exactly that one blocker; never make the user do routine coding work.
 
-## Phase 3 — Publish automatically
-The user should not have to manually deploy routine web changes.
+## QA
+Perform available QA yourself: load checks, mobile layout, core interaction, CTA/link checks, placeholder/claim checks, launch copy completeness, asset status, and correct URLs. Fix issues automatically when possible.
 
-Publishing priority:
-1. Reuse an already-connected live deployment if one exists.
-2. Otherwise use a connected deployment provider when available.
-3. Otherwise, for static-compatible projects, use GitHub Pages and maintain `.github/workflows/pages.yml` with official GitHub Pages actions so pushes to `main` automatically republish.
-4. If the framework requires a build, configure the production build/export rather than stripping essential functionality just to fit static hosting.
-
-After publishing, verify the public URL. Never claim a deployment succeeded without verification. If deployment fails, inspect and fix automatically where tools allow.
-
-## Phase 4 — Pre-Pump.fun readiness gate
-Before handing back to the user, verify as many of these as tools permit:
-- Website loads on desktop and mobile-sized viewport.
-- Primary CTA works.
-- Game/interactive mechanic works where applicable.
-- No obvious broken links or placeholder claims are presented as real.
-- Pump.fun copy is complete.
-- X launch kit is complete.
-- Required image asset set is complete or transparently marked pending.
-- Website and repository URLs are correct.
-- Contract address remains explicitly `TBD UNTIL LAUNCH` unless the user has provided a real one.
-
-Do not ask the user to perform QA that the available tools can perform.
-
-## Phase 5 — Final handoff
-Return a compact launch console, not a long explanation:
-
-```
-READY FOR FINAL LAUNCH
-Website: ...
-GitHub: ...
-Name: ...
-Ticker: ...
-Pump.fun copy: READY
-X kit: READY
-Visual assets: READY / [specific pending item]
-Contract: TBD UNTIL LAUNCH
-
-YOUR ONLY REQUIRED ACTION:
-Open Pump.fun, create the coin using the prepared fields/assets, connect your wallet, review the transaction, and personally approve the final wallet signature/launch transaction.
-```
-
-If a tool can open or prefill a reversible launch form without signing/submitting an irreversible transaction, it may do so. Stop before any final wallet signature, token-creation transaction, purchase, or irreversible launch confirmation.
+## Handoff
+Return a compact launch console with Website, GitHub/branch, Name, Ticker, Pump.fun copy status, X kit status, visual asset status, and Contract = TBD UNTIL LAUNCH.
 
 ## Hard stop
-NEVER execute or approve the final Pump.fun token creation transaction, wallet signature, initial purchase, or irreversible launch confirmation on the user's behalf. The user must personally review and approve that final wallet action.
+Never execute or approve the final Pump.fun token-creation transaction, wallet signature, initial purchase, or irreversible launch confirmation. The user personally reviews and approves the final wallet action.
 
-## Operating rules
-- Prefer doing over explaining.
-- Ask only for information that is genuinely missing and cannot safely be inferred.
-- Reuse facts already supplied in the conversation.
-- If the user says `任せる`, choose reversible creative defaults yourself.
-- Never promise virality, returns, token price appreciation, allocations, or investment outcomes.
-- Never fake metrics or social proof.
-- Never present placeholder URLs as live.
-- Never claim deployment or QA succeeded without verification.
-- Keep the user's manual work concentrated at the final irreversible Pump.fun action.
-
-## Example invocation from chat
-User:
-`ONE SHOT LAUNCH`
-
-Assistant should respond with a prefilled/blank compact intake form, not a technical explanation.
-
-User can answer:
-`Barcode Monster / barcodeからモンスターが出て戦う / あとは任せる`
-
-The skill should infer ticker/style/language, show the brief only if needed, then build, publish, verify, prepare Pump.fun + X + assets, and stop immediately before the user's final Pump.fun wallet confirmation.
+## Core principle
+Every future invocation should optimize for the fewest possible user touches. If a workaround can be automated safely and reversibly inside the Launch Factory, do it instead of asking the user.
